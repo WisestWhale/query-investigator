@@ -17,5 +17,20 @@ services:
       timeout: 3s
       retries: 30
 
+  pgadmin:
+    image: dpage/pgadmin4:9.17
+    environment:
+      PGADMIN_DEFAULT_EMAIL: learner@example.com
+      PGADMIN_DEFAULT_PASSWORD: localadmin
+    ports:
+      - "127.0.0.1:5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   postgres_data:
+  pgadmin_data:

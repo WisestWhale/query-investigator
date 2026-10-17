@@ -56,3 +56,18 @@ To stop the database while retaining its data:
 ```powershell
 docker compose stop
 ```
+
+## Browse tables in pgAdmin
+
+```powershell
+docker compose up -d pgadmin
+```
+
+Open http://localhost:5050 and sign in using `learner@example.com` and
+`localadmin` (local practice credentials). Expand Servers > Learning >
+Query Lab (local). When asked for the database password, enter `localdev`.
+Expand Databases > query_lab > Schemas > public > Tables.
+Right-click customers > View/Edit Data > All Rows to browse its data.
+
+pgAdmin uses host `db` and port 5432 because it connects inside Docker's
+network; Python on Windows uses localhost and port 5433.

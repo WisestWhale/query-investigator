@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Query Lab (local)",
+      "Group": "Learning",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "query_lab",
+      "Username": "querydev",
+      "SSLMode": "prefer"
+    }
+  }
+}
