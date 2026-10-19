@@ -1,0 +1,21 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Sort",
+      "Plan Rows": 12,
+      "Actual Rows": 10,
+      "Actual Loops": 1,
+      "Plans": [
+        {
+          "Node Type": "Seq Scan",
+          "Relation Name": "orders",
+          "Plan Rows": 12,
+          "Actual Rows": 10,
+          "Actual Loops": 1,
+          "Rows Removed by Filter": 990
+        }
+      ]
+    },
+    "Execution Time": 0.8
+  }
+]

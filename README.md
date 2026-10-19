@@ -71,3 +71,29 @@ Right-click customers > View/Edit Data > All Rows to browse its data.
 
 pgAdmin uses host `db` and port 5432 because it connects inside Docker's
 network; Python on Windows uses localhost and port 5433.
+
+## Inspect a query plan
+
+Try the sample without a database:
+
+```powershell
+uv run explain_query.py --demo
+```
+
+It prints each step, including child steps, estimated rows and measured rows when available. The sample numbers are made up for testing. A sequential scan is not automatically a problem.
+
+For your local `orders` table (which must have a numeric `total` column):
+
+```powershell
+uv run explain_query.py --total 40
+uv run explain_query.py --total 40 --analyze --save plan.json
+uv run explain_query.py --load plan.json
+```
+
+The first command asks PostgreSQL for estimates. `--analyze` executes the SELECT to measure it, using a read-only transaction and a 10-second timeout. `--save` creates a new file and refuses to overwrite existing files. `--load` reads a saved PostgreSQL JSON plan without connecting to the database. Row counts on measured steps are per loop.
+
+This prototype explains the plan structure. It does not change indexes or automatically tune the query.
+
+```powershell
+uv run python -B -m unittest discover -p "test_*.py" -v
+```
