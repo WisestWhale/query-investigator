@@ -97,3 +97,19 @@ This prototype explains the plan structure. It does not change indexes or automa
 ```powershell
 uv run python -B -m unittest discover -p "test_*.py" -v
 ```
+
+## Compare two saved plans
+
+```powershell
+uv run compare_plans.py before.json after.json
+```
+
+This command works offline. It shows the execution-time difference and changes in the counts of plan steps, including nested scans and index names. A negative time change means the second recorded run took less time. If either plan has estimates only, no timing comparison is reported. The step comparison counts nodes; it does not compare their order, filters or join conditions.
+
+Save measured plans with `explain_query.py --analyze --save` using different filenames. Compare the same query and inputs; caching, data changes and other workloads can affect timings. One run is not a benchmark.
+
+For a quick check without PostgreSQL, compare the sample to itself:
+
+```powershell
+uv run compare_plans.py sample_plan.json sample_plan.json
+```
