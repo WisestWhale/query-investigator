@@ -3,6 +3,7 @@ import io
 import json
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch, MagicMock
 from decimal import Decimal
@@ -37,6 +38,15 @@ class PlanReportTests(unittest.TestCase):
             explain_query.main()
         query.assert_not_called()
         self.assertIn("Sample data", output.getvalue())
+        self.assertIn("Seq Scan on orders", output.getvalue())
+
+    def test_load_accepts_file_with_byte_order_mark(self):
+        # Windows PowerShell 5.1 writes UTF-8 files with a byte order mark.
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder, "plan.json")
+            path.write_text(Path(__file__).with_name("sample_plan.json").read_text(), encoding="utf-8-sig")
+            with patch.object(sys, "argv", ["explain_query.py", "--load", str(path)]), contextlib.redirect_stdout(io.StringIO()) as output:
+                explain_query.main()
         self.assertIn("Seq Scan on orders", output.getvalue())
 
     def test_non_finite_total_is_rejected_before_connecting(self):

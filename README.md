@@ -49,7 +49,18 @@ The health check waits until Postgres accepts connections.
 The example username/password are disposable local development credentials.
 
 `check_db.py` has just three database steps: connect, execute SELECT, fetch a row.
-There are no application tables yet. We'll create the orders table together.
+
+## Create the orders table
+
+```powershell
+uv run seed_orders.py
+```
+
+This creates `orders` with 200,000 generated rows (`--rows` changes the count)
+and runs ANALYZE so the planner has fresh statistics. Totals range from 0.00 to
+500.00, so looking up one total matches only a few rows. A fixed random seed
+gives the same data on every run. If `orders` already exists the command stops;
+`--reset` drops and recreates it, deleting its current data and indexes.
 
 To stop the database while retaining its data:
 
@@ -107,6 +118,18 @@ uv run compare_plans.py before.json after.json
 This command works offline. It shows the execution-time difference and changes in the counts of plan steps, including nested scans and index names. A negative time change means the second recorded run took less time. If either plan has estimates only, no timing comparison is reported. The step comparison counts nodes; it does not compare their order, filters or join conditions.
 
 Save measured plans with `explain_query.py --analyze --save` using different filenames. Compare the same query and inputs; caching, data changes and other workloads can affect timings. One run is not a benchmark.
+
+A full before/after exercise with an index on `total`:
+
+```powershell
+uv run seed_orders.py --reset
+uv run explain_query.py --total 40 --analyze --save before.json
+docker compose exec db psql -U querydev -d query_lab -c "CREATE INDEX orders_total_idx ON orders (total)"
+uv run explain_query.py --total 40 --analyze --save after.json
+uv run compare_plans.py before.json after.json
+```
+
+To undo the index, run the same `psql` command with `DROP INDEX orders_total_idx`.
 
 For a quick check without PostgreSQL, compare the sample to itself:
 
