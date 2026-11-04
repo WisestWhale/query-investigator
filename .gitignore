@@ -5,3 +5,4 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 tempCodeRunnerFile.py
+.ask_ai_usage.json

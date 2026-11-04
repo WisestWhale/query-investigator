@@ -20,6 +20,7 @@ declares our dependencies; `uv.lock` records the exact resolved versions.
 
 - psycopg[binary]: PostgreSQL driver with precompiled client components.
 - python-dotenv: loads local connection settings from `.env`.
+- anthropic: calls Claude for `ask_ai.py`.
 
 Copy `.env.example` to `.env` when setting up the database. `.env` and `.venv`
 are excluded from Git. The example credentials are for local practice only.
@@ -136,3 +137,24 @@ For a quick check without PostgreSQL, compare the sample to itself:
 ```powershell
 uv run compare_plans.py sample_plan.json sample_plan.json
 ```
+
+## Ask AI to explain a plan
+
+```powershell
+uv run ask_ai.py after.json
+uv run ask_ai.py before.json after.json
+```
+
+With one file, Claude explains the plan's steps. With two, it also gets the
+`compare_plans.py` output and explains what changed. It reads saved files only;
+it does not connect to the database or change anything.
+
+Set `ANTHROPIC_API_KEY` in `.env` first (see `.env.example`). Each run is a paid
+API request. The explanation can be wrong, so check it against the plan itself.
+
+Each user (your Windows login name) can make 3 AI requests per day. The fourth
+is blocked before anything is sent. Counts are kept in `.ask_ai_usage.json`
+next to the script and reset at midnight local time. Requests that fail before
+Claude answers are not counted. This is a local safeguard against accidental
+spending, not a security control: deleting that file resets the count.
+To try it without PostgreSQL: `uv run ask_ai.py sample_plan.json`.

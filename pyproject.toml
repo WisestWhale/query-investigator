@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Learning to measure and explain PostgreSQL query latency"
 requires-python = ">=3.13,<3.14"
 dependencies = [
+    "anthropic>=1,<2",
     "psycopg[binary]>=3.3,<4",
     "python-dotenv>=1,<2",
 ]
