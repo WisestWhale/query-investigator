@@ -43,7 +43,7 @@ def main():
             raise ValueError("The save file already exists. Choose a new filename.")
         if args.load or args.demo:
             path = args.load or Path(__file__).with_name("sample_plan.json")
-            data = json.loads(path.read_text(encoding="utf-8"))
+            data = json.loads(path.read_text(encoding="utf-8-sig"))
         else:
             try:
                 total = Decimal(args.total)
